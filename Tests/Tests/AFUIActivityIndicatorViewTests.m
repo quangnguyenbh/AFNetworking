@@ -34,7 +34,7 @@
 - (void)setUp {
     [super setUp];
     self.activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    self.request = [NSURLRequest requestWithURL:[self.baseURL URLByAppendingPathComponent:@"delay/1"]];
+    self.request = [NSURLRequest requestWithURL:self.delayURL];
     self.sessionManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:nil];
 }
 
@@ -59,7 +59,7 @@
     self.activityIndicatorView = nil;
     
     [task resume];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     [task cancel];
 }
 
@@ -84,7 +84,7 @@
     self.activityIndicatorView = nil;
     
     [task resume];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     [task cancel];
 }
 
@@ -110,7 +110,7 @@
     [task resume];
     [task suspend];
     [task resume];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     [task cancel];
 }
 

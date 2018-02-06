@@ -34,7 +34,7 @@
 - (void)setUp {
     [super setUp];
     self.refreshControl = [[UIRefreshControl alloc] init];
-    self.request = [NSURLRequest requestWithURL:[self.baseURL URLByAppendingPathComponent:@"delay/1"]];
+    self.request = [NSURLRequest requestWithURL:self.delayURL];
     self.sessionManager = [[AFURLSessionManager alloc] initWithSessionConfiguration:nil];
 }
 
@@ -59,7 +59,7 @@
     self.refreshControl = nil;
     
     [task resume];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     [task cancel];
 }
 
@@ -83,7 +83,7 @@
     self.refreshControl = nil;
     
     [task resume];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     [task cancel];
 }
 
@@ -109,7 +109,7 @@
     [task resume];
     [task suspend];
     [task resume];
-    [self waitForExpectationsWithCommonTimeoutUsingHandler:nil];
+    [self waitForExpectationsWithCommonTimeout];
     [task cancel];
 }
 

@@ -679,6 +679,11 @@ NSTimeInterval const kAFUploadStream3GSuggestedDelay = 0.2;
     return self;
 }
 
+- (void)setRequest:(NSMutableURLRequest *)request
+{
+    _request = [request mutableCopy];
+}
+
 - (BOOL)appendPartWithFileURL:(NSURL *)fileURL
                          name:(NSString *)name
                         error:(NSError * __autoreleasing *)error
@@ -1254,7 +1259,21 @@ typedef enum {
             [mutableRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
         }
 
-        [mutableRequest setHTTPBody:[NSJSONSerialization dataWithJSONObject:parameters options:self.writingOptions error:error]];
+        if (![NSJSONSerialization isValidJSONObject:parameters]) {
+            if (error) {
+                NSDictionary *userInfo = @{NSLocalizedFailureReasonErrorKey: NSLocalizedStringFromTable(@"The `parameters` argument is not valid JSON.", @"AFNetworking", nil)};
+                *error = [[NSError alloc] initWithDomain:AFURLRequestSerializationErrorDomain code:NSURLErrorCannotDecodeContentData userInfo:userInfo];
+            }
+            return nil;
+        }
+
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:parameters options:self.writingOptions error:error];
+        
+        if (!jsonData) {
+            return nil;
+        }
+        
+        [mutableRequest setHTTPBody:jsonData];
     }
 
     return mutableRequest;
@@ -1333,7 +1352,13 @@ typedef enum {
             [mutableRequest setValue:@"application/x-plist" forHTTPHeaderField:@"Content-Type"];
         }
 
-        [mutableRequest setHTTPBody:[NSPropertyListSerialization dataWithPropertyList:parameters format:self.format options:self.writeOptions error:error]];
+        NSData *plistData = [NSPropertyListSerialization dataWithPropertyList:parameters format:self.format options:self.writeOptions error:error];
+        
+        if (!plistData) {
+            return nil;
+        }
+        
+        [mutableRequest setHTTPBody:plistData];
     }
 
     return mutableRequest;
